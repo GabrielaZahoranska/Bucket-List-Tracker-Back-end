@@ -1,32 +1,33 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/database');
 
-// Import routes
+// routes
 const authRoutes = require('./routes/authRoutes');
 const bucketRoutes = require('./routes/bucketItemRoutes');
 const experienceRoutes = require('./routes/experienceRoutes');
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to DB
-connectDB();
-
-// Routes
+// api routes
 app.use('/api/auth', authRoutes);
 app.use('/api/bucketitems', bucketRoutes);
 app.use('/api/experiences', experienceRoutes);
 
-// Root route
 app.get('/', (req, res) => {
   res.send('Bucket List Tracker API running');
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+async function start() {
+  // check env before starting
+  if (!process.env.JWT_SECRET || !process.env.MONGO_URI) process.exit(1);
+  await connectDB();
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT);
+}
+
+start().catch(() => process.exit(1));
