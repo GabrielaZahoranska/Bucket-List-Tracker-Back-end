@@ -3,10 +3,8 @@ services:
     name: bucket-list-tracker-api
     runtime: node
     plan: free
-
     buildCommand: npm install
     startCommand: npm start
-
     envVars:
       - key: NODE_ENV
         value: production
